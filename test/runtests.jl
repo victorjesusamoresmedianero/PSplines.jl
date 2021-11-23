@@ -2,5 +2,7 @@ using PSplines
 using Test
 
 @testset "PSplines.jl" begin
-    # Write your tests here.
+    include("test_MatricesBuilding.jl")
+    #include("")
 end
+
