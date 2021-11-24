@@ -83,6 +83,16 @@ end
 Returns a matrix full of zeros with the appropiate dimensions to apply
 a selective penalization to the first differences vector. The default
 0 value, implies no penalization on the first derivative.
+
+#Examples
+```julia julia-repl
+julia> buildOm1(5)
+4×4 Matrix{Float64}:
+ 0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0
+```
 """
 function buildOm1(nvertices)
     return zeros(Float64, nvertices - 1, nvertices - 1)
@@ -95,10 +105,11 @@ a selective penalization to the second differences vector. The default
 0 value, implies no penalization on the second derivative.
 #Examples
 ```julia julia-repl
-julia> D3matrix(5)
-2×5 Matrix{Float64}:
- -1.0   3.0  -3.0   1.0  0.0
-  0.0  -1.0   3.0  -3.0  1.0
+julia> buildOm2(5)
+3×3 Matrix{Float64}:
+ 0.0  0.0  0.0
+ 0.0  0.0  0.0
+ 0.0  0.0  0.0
 ```
 """
 function buildOm2(nvertices)
@@ -110,6 +121,13 @@ end
 Returns a matrix full of zeros with the appropiate dimensions to apply
 a selective penalization to the third differences vector. The default
 0 value, implies no penalization on the third derivative.
+#Examples
+```julia julia-repl
+julia> buildOm3(5)
+2×2 Matrix{Float64}:
+ 0.0  0.0
+ 0.0  0.0
+```
 """
 function buildOm3(nvertices)
     return zeros(Float64, nvertices - 3, nvertices - 3)
