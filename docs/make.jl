@@ -20,4 +20,5 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/victorjesusamoresmedianero/PSplines.jl",
+    devbranch = "main",
 )
