@@ -1,6 +1,6 @@
 """
     D1matrix(nvertices)
-Return the first difference of dimension `nvercies-1 x nvertices`.
+Returns the first difference of dimension `nvercies-1 x nvertices`.
 It is important to note that the numerical first derivative of a 
 vector produces a vector with 1 component less than the input vector.
 
@@ -23,7 +23,7 @@ end
 
 """
     D2matrix(nvertices)
-Return the second difference of dimension `nvercies-2 x nvertices`.
+Returns the second difference of dimension `nvercies-2 x nvertices`.
 It is important to note that the numerical second derivative of a 
 vector produces a vector with 2 component less than the input vector.
 
@@ -51,7 +51,7 @@ end
 
 """
     D3matrix(nvertices)
-Return the second difference of dimension `nvercies-3 x nvertices`.
+Returns the second difference of dimension `nvercies-3 x nvertices`.
 It is important to note that the numerical second derivative of a 
 vector produces a vector with 2 component less than the input vector.
 
@@ -75,4 +75,42 @@ function D3matrix(nvertices::Int)
     end
 
     return D3matrix::Array{Float64,2}
+end
+
+
+"""
+    buildOm1(nvertices)
+Returns a matrix full of zeros with the appropiate dimensions to apply
+a selective penalization to the first differences vector. The default
+0 value, implies no penalization on the first derivative.
+"""
+function buildOm1(nvertices)
+    return zeros(Float64, nvertices - 1, nvertices - 1)
+end
+
+"""
+    buildOm2(nvertices)
+Returns a matrix full of zeros with the appropiate dimensions to apply
+a selective penalization to the second differences vector. The default
+0 value, implies no penalization on the second derivative.
+#Examples
+```julia julia-repl
+julia> D3matrix(5)
+2×5 Matrix{Float64}:
+ -1.0   3.0  -3.0   1.0  0.0
+  0.0  -1.0   3.0  -3.0  1.0
+```
+"""
+function buildOm2(nvertices)
+    return zeros(Float64, nvertices - 2, nvertices - 2)
+end
+
+"""
+    buildOm3(nvertices)
+Returns a matrix full of zeros with the appropiate dimensions to apply
+a selective penalization to the third differences vector. The default
+0 value, implies no penalization on the third derivative.
+"""
+function buildOm3(nvertices)
+    return zeros(Float64, nvertices - 3, nvertices - 3)
 end
