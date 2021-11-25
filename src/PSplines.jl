@@ -1,7 +1,9 @@
 module PSplines
 
+using LinearAlgebra: diagind
+
 # buildmatrices.jl
-export D1matrix, D2matrix, D3matrix, buildOm1, buildOm2, buildOm3, buildW
+export D1matrix, D2matrix, D3matrix, Ω1matrix, Ω2matrix, Ω3matrix, Wmatrix
 include("buildMatrices.jl")
 
 # types.jl

@@ -79,14 +79,14 @@ end
 
 
 """
-    buildOm1(nvertices)
+    Ω1matrix(nvertices)
 Returns a matrix full of zeros with the appropiate dimensions to apply
 a selective penalization to the first differences vector. The default
 0 value, implies no penalization on the first derivative.
 
 #Examples
 ```julia julia-repl
-julia> buildOm1(5)
+julia> Ω1matrix(5)
 4×4 Matrix{Float64}:
  0.0  0.0  0.0  0.0
  0.0  0.0  0.0  0.0
@@ -94,62 +94,62 @@ julia> buildOm1(5)
  0.0  0.0  0.0  0.0
 ```
 """
-function buildOm1(nvertices)
+function Ω1matrix(nvertices)
     return zeros(Float64, nvertices - 1, nvertices - 1)
 end
 
 """
-    buildOm2(nvertices)
+    Ω2matrix(nvertices)
 Returns a matrix full of zeros with the appropiate dimensions to apply
 a selective penalization to the second differences vector. The default
 0 value, implies no penalization on the second derivative.
 
 #Examples
 ```julia julia-repl
-julia> buildOm2(5)
+julia> Ω2matrix(5)
 3×3 Matrix{Float64}:
  0.0  0.0  0.0
  0.0  0.0  0.0
  0.0  0.0  0.0
 ```
 """
-function buildOm2(nvertices)
+function Ω2matrix(nvertices)
     return zeros(Float64, nvertices - 2, nvertices - 2)
 end
 
 """
-    buildOm3(nvertices)
+    Ω3matrix(nvertices)
 Returns a matrix full of zeros with the appropiate dimensions to apply
 a selective penalization to the third differences vector. The default
 0 value, implies no penalization on the third derivative.
 
 #Examples
 ```julia julia-repl
-julia> buildOm3(5)
+julia> Ω3matrix(5)
 2×2 Matrix{Float64}:
  0.0  0.0
  0.0  0.0
 ```
 """
-function buildOm3(nvertices)
+function Ω3matrix(nvertices)
     return zeros(Float64, nvertices - 3, nvertices - 3)
 end
 
 
 """
-    buildW(nvertices)
+    Wmatrix(nvertices)
 Given the total number of experimental points,
 build the weight matrix for that number of points.
 Note that by default all the weights are equal to 1.
 #Examples
 ```julia julia-repl
-julia> buildOm3(5)
+julia> Wmatrix(5)
 2×2 Matrix{Float64}:
  0.0  0.0
  0.0  0.0
 ```
 """
-function buildW(nexp)
+function Wmatrix(nexp)
     W = zeros(Float64, nexp, nexp)
     W[diagind(W)] .= 1.
     return W
