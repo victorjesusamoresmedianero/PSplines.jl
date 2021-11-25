@@ -9,6 +9,6 @@ export BSpline, knots, vertices, buildKnots
 include("types.jl")
 
 #utils.jl
-export equiSpacedPosition, evalBSplineBasis
+export equiSpacedPosition, evalBSplineBasis, evalBSpline
 include("utils.jl")
 end

@@ -42,7 +42,7 @@ equiSpacedPosition(x, knotsIn) = equiSpacedPosition(Float64(x), Float64.(knotsIn
 
 """
     evalBSplineBasis(x, knots)
-Builds evaluation of the cubic BSpline basis corresponding to
+Builds the evaluation of the cubic BSpline basis corresponding to
 the `knots` at `x`.
 #Examples
 ```julia julia-repl
@@ -84,3 +84,20 @@ function evalBSplineBasis(x::Float64, knots::Vector{Float64})
 end
 
 evalBSplineBasis(x, knots) = evalBSplineBasis(Float64(x), Float64.(knots)) 
+
+
+"""
+evalBSpline(x, knots, vertices)
+Evaluation the cubic BSpline at `x` for vertices values `vertices`
+and the BSpline basis defined by `evalBSplineBasis(x, knots)`.
+#Examples
+```julia julia-repl
+julia> evalBSpline(9.,buildKnots(1.,10., 12), ones(12))
+0.9999999999999999
+```  
+"""
+function evalBSpline(x, knots, vertices)
+    return evalBSplineBasis(x, knots)'*vertices
+end
+
+evalBSpline(x, bs::BSpline) = evalBSpline(x, bs.knots, bs.vertices) 

@@ -11,15 +11,20 @@ end
 end
 
 @testset "at the end of equiSpacedPosition" begin
-    @test equiSpacedPosition(2, [1,2,3,4,5,6,7,8]) == 7
+    @test equiSpacedPosition(8, [1,2,3,4,5,6,7,8]) == 7
 end
 
 
 @testset "the beginning of evalBSplineBasis" begin
-    @test all(evalBSplineBasis(1.,buildKnots(1.,10., 12)) .≈ vcat([1/6, 4/6, 1/6, 0], zeros(8)))
+    @test all(evalBSplineBasis(1.,buildKnots(1.,10., 12)) .≈ vcat([1.0/6.0, 4.0/6.0, 1.0/6.0, 0.], zeros(Float64,8)))
 end
 
 
 @testset "the end of evalBSplineBasis" begin
-    @test all(evalBSplineBasis(10.,buildKnots(1.,10., 12)) .≈ vcat(zeros(8), [0, 1/6, 4/6, 1/6]))
+    @test all((evalBSplineBasis(10.,buildKnots(1.,10., 12))-vcat(zeros(Float64, 8), [0., 1.0/6.0, 4.0/6.0, 1.0/6.0])).<1e-16)
+end
+
+
+@testset "test evalBSpline" begin
+    @test abs(evalBSpline(9.,buildKnots(1.,10., 12), ones(12))-1.0)<=1e-12
 end
