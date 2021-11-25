@@ -11,7 +11,7 @@ end
 end
 
 @testset "at the end of equiSpacedPosition" begin
-    @test equiSpacedPosition(2, [1,2,3,4,5,6,7,8]) == 7
+    @test equiSpacedPosition(8, [1,2,3,4,5,6,7,8]) == 7
 end
 
 
