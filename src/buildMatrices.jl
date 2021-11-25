@@ -103,6 +103,7 @@ end
 Returns a matrix full of zeros with the appropiate dimensions to apply
 a selective penalization to the second differences vector. The default
 0 value, implies no penalization on the second derivative.
+
 #Examples
 ```julia julia-repl
 julia> buildOm2(5)
@@ -121,6 +122,7 @@ end
 Returns a matrix full of zeros with the appropiate dimensions to apply
 a selective penalization to the third differences vector. The default
 0 value, implies no penalization on the third derivative.
+
 #Examples
 ```julia julia-repl
 julia> buildOm3(5)
@@ -131,4 +133,24 @@ julia> buildOm3(5)
 """
 function buildOm3(nvertices)
     return zeros(Float64, nvertices - 3, nvertices - 3)
+end
+
+
+"""
+    buildW(nvertices)
+Given the total number of experimental points,
+build the weight matrix for that number of points.
+Note that by default all the weights are equal to 1.
+#Examples
+```julia julia-repl
+julia> buildOm3(5)
+2×2 Matrix{Float64}:
+ 0.0  0.0
+ 0.0  0.0
+```
+"""
+function buildW(nexp)
+    W = zeros(Float64, nexp, nexp)
+    W[diagind(W)] .= 1.
+    return W
 end
