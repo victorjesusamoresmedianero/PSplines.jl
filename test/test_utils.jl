@@ -21,5 +21,5 @@ end
 
 
 @testset "the end of evalBSplineBasis" begin
-    @test all(evalBSplineBasis(10.,buildKnots(1.,10., 12)) .≈ vcat(zeros(Float64, 8), [0., 1.0/6.0, 4.0/6.0, 1.0/6.0]))
+    @test all((evalBSplineBasis(10.,buildKnots(1.,10., 12))-vcat(zeros(Float64, 8), [0., 1.0/6.0, 4.0/6.0, 1.0/6.0])).<1e-16)
 end
