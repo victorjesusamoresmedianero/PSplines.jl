@@ -101,3 +101,22 @@ function evalBSpline(x, knots, vertices)
 end
 
 evalBSpline(x, bs::BSpline) = evalBSpline(x, bs.knots, bs.vertices) 
+
+
+function expandBSpline(knots, vertices, xin, xend)
+    knotsInmin = knots[2]
+    knotsInmax = knots[end-1]
+
+    lsubd = knots[2] - knots[1]
+
+    intervLeft = (knotsInmin - xin)/lsbud
+    intervRight = (xend - knotsInmax)/lsubd
+
+    intervLeft > 0 ? nKnotsLeft = ceil(intervLeft) : nKnotsLeft = 0
+    intervRight > 0 ? nKnotsRight = ceil(intervRight) : nKnotsRight = 0
+
+    addKnotsLeft = LinRange(knots[1]-lsubd*nKnotsLeft, knots[1]-lsubd, nKnotsLeft)
+    addKnotsRight = LinRange(knots[end]+lsubd, knots[end]+lsubd*nKnotsRight, nKnotsRight)
+
+    knotsNew = vcat(addKnotsLeft, knots, addKnotsRight)
+end

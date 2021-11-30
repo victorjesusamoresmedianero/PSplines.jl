@@ -21,10 +21,10 @@ Returns the field vertices for a certain `BSpline`.
 vertices(bs::BSpline) = bs.vertices
 
 """
-    buildKnots(xin, xfin, nvertices)
-Returns the knots of a `BSpline` with beginning xin, end xfin
+    buildKnots(xin, xend, nvertices)
+Returns the knots of a `BSpline` with beginning xin, end xend
 with nvertices components. The knots returned by this function
-are equispaced between xin and xfin.
+are equispaced between xin and xend.
 
 #Examples
 ```julia julia-repl
@@ -42,8 +42,8 @@ julia> buildKnots(1.,5.,10)
  5.571428571428571
 ```
 """
-function buildKnots(xin, xfin, nvertices)
-    knotsIn = LinRange(xin, xfin, nvertices-2)
+function buildKnots(xin, xend, nvertices)
+    knotsIn = LinRange(xin, xend, nvertices-2)
     knots = vcat(knotsIn[1]-(knotsIn[2]-knotsIn[1]), knotsIn,  knotsIn[end]+(knotsIn[2]-knotsIn[1]))
     return knots
 end
