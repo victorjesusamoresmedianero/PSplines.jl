@@ -35,6 +35,7 @@ function equiSpacedPosition(x::T, knotsIn::Vector{T}) where {T<:Real}
     end
     return s
 end
+equiSpacedPosition(x, knotsIn) = equiSpacedPosition(Float64(x), Float64.(knotsIn))
 
 """
     evalBSplineBasis(x, knots)
@@ -79,13 +80,17 @@ function evalBSplineBasis(x::T, knots::Vector{T}) where {T<:Real}
     return bsplineBasis
 end
 
+evalBSplineBasis(x, knots) = evalBSplineBasis(Float64(x), Float64.(knots))
+
 function evalBSplineBasis2dim(x::T, y::T, knotsx::Vector{T}, knotsy::Vector{T}) where {T<:Real}
 
     bsplineBasisx = evalBSplineBasis(x, knotsx)
     bsplineBasisy = evalBSplineBasis(y, knotsy)
     return vec(bsplineBasisx*bsplineBasisy')
 end
- 
+
+evalBSplineBasis2dim(x, y, knotsx, knotsy) = evalBSplineBasis2dim(Float64(x), Float64(y), Float64.(knotsx), Float64.(knotsy))
+
 """
     evalBSplineBasisD1(x, knots)
 Builds the evaluation of the derivative of the cubic BSpline basis corresponding to
@@ -124,6 +129,7 @@ function evalBSplineBasisD1(x::T, knots::Vector{T}) where {T<:Real}
     bsplineBasisD1[s:s+3] = ξvlocalD1'*transfMatrix*(1/lsubd)
     return bsplineBasisD1
 end
+evalBSplineBasisD1(x, knots) = evalBSplineBasisD1(Float64(x), Float64.(knots))
 
 """
     evalBSpline(x, knots, vertices)
