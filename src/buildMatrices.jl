@@ -18,7 +18,7 @@ function D1matrix(nvertices::Int)
         D1matrix[i,i] = -1.
         D1matrix[i,i+1] = 1.
     end
-    return D1matrix::Array{Float64,2}
+    return D1matrix
 end
 
 """
@@ -45,9 +45,22 @@ function D2matrix(nvertices::Int)
         D2matrix[i,i+2] = 1.
     end
 
-    return D2matrix::Array{Float64,2}
+    return D2matrix
 end
 
+
+function PD2matrices2dim(nverticesRows::Int, nverticesCols::Int)
+
+    D2Rows = D2matrix(nverticesRows)
+    D2Cols = D2matrix(nverticesCols)
+
+    IRows = (1.0*I)(nverticesRows)
+    ICols = (1.0*I)(nverticesCols)
+
+    PRows = kronecker(ICols, D2Rows)'* kronecker(ICols, D2Rows)
+    PCols = kronecker(D2Cols,IRows)'* kronecker(D2Cols,IRows)
+    return PRows, PCols
+end
 
 """
     D3matrix(nvertices)
@@ -74,7 +87,7 @@ function D3matrix(nvertices::Int)
         D3matrix[i,i+3] = 1.
     end
 
-    return D3matrix::Array{Float64,2}
+    return D3matrix
 end
 
 

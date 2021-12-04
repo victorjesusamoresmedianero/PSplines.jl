@@ -1,16 +1,22 @@
 module PSplines
 
-using LinearAlgebra: diagind
+using LinearAlgebra: diagind, I
+using Kronecker: kronecker
 
 # buildmatrices.jl
 export D1matrix, D2matrix, D3matrix, Ω1matrix, Ω2matrix, Ω3matrix, Wmatrix
+export PD2matrices2dim
 include("buildMatrices.jl")
 
 # types.jl
-export BSpline, knots, vertices, buildKnots
+export BSpline, BSpline2dim, knots, vertices, buildKnots
 include("types.jl")
 
 #utils.jl
-export equiSpacedPosition, evalBSplineBasis, evalBSpline
+export equiSpacedPosition, buildSystemMatrix, buildSystemIndVect
+export evalBSplineBasis, evalBSpline
+export evalBSplineBasis2dim, evalBSpline2dim
+export evalBSplineBasisD1, evalBSplineD1
+export expandBSpline
 include("utils.jl")
 end
