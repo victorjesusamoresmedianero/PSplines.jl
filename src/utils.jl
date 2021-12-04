@@ -20,11 +20,11 @@ function equiSpacedPosition(x::T, knotsIn::Vector{T}) where {T<:Real}
     xinDist = abs(knotsIn[1]-x)
     xfinDist = abs(x - knotsIn[end])
 
-    if x <= prevfloat(knotsIn[1])
+    if x <= prevfloat(Float64(knotsIn[1]))
 
         xinDist/lsubd < proximityTol ? s = 1 : throw(DomainError(x, "The value is out of the domain (left)")) 
 
-    elseif x >= nextfloat(knotsIn[end])
+    elseif x >= nextfloat(Float64(knotsIn[end]))
 
         xfinDist/lsubd < proximityTol ? s = nbins : throw(DomainError(x, "The value is out of the domain (right)"))
 
