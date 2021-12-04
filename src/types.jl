@@ -30,7 +30,7 @@ struct BSpline2dim{T}
     knotsy::Vector{T}
     vertices::Vector{T}
 end
-
+## Document
 knotsx(bsdim2::BSpline2dim) = bsdim2.knotsx
 knotsy(bsdim2::BSpline2dim) = bsdim2.knotsy
 vertices(bsdim2::BSpline2dim) = bsdim2.vertices

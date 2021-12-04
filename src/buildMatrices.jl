@@ -48,7 +48,7 @@ function D2matrix(nvertices::Int)
     return D2matrix
 end
 
-
+## Document
 function PD2matrices2dim(nverticesRows::Int, nverticesCols::Int)
 
     D2Rows = D2matrix(nverticesRows)
