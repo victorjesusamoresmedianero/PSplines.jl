@@ -132,6 +132,20 @@ function evalBSplineBasisD1(x::T, knots::Vector{T}) where {T<:Real}
 end
 evalBSplineBasisD1(x, knots) = evalBSplineBasisD1(Float64(x), Float64.(knots))
 
+
+function evalBSplineBasis2dimD1x(x::T, y::T, knotsx::Vector{T}, knotsy::Vector{T}) where {T<:Real}
+    dbsplineBasisx = evalBSplineBasisD1(x, knotsx)
+    bsplineBasisy = evalBSplineBasis(y, knotsy)
+    return vec(dbsplineBasisx*bsplineBasisy')
+end
+
+function evalBSplineBasis2dimD1y(x::T, y::T, knotsx::Vector{T}, knotsy::Vector{T}) where {T<:Real}
+    bsplineBasisx = evalBSplineBasis(x, knotsx)
+    dbsplineBasisy = evalBSplineBasisD1(y, knotsy)
+    return vec(bsplineBasisx*dbsplineBasisy')
+end
+
+
 """
     evalBSpline(x, knots, vertices)
 Evaluation of the cubic BSpline at `x` for vertices values `vertices`
@@ -154,6 +168,21 @@ function evalBSpline2dim(x, y, knotsx, knotsy, vertices)
 end
 
 evalBSpline2dim(x, y, bs2dim::BSpline2dim) = evalBSpline2dim(x, y, bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices)
+
+
+function evalBSpline2dimD1x(x, y, knotsx, knotsy, vertices)
+    return evalBSplineBasis2dimD1x(x, y, knotsx, knotsy)'*vertices
+end
+
+evalBSpline2dimD1x(x, y, bs2dim::BSpline2dim) = evalBSpline2dimD1x(x, y, bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices)
+
+
+function evalBSpline2dimD1y(x, y, knotsx, knotsy, vertices)
+    return evalBSplineBasis2dimD1y(x, y, knotsx, knotsy)'*vertices
+end
+
+evalBSpline2dimD1y(x, y, bs2dim::BSpline2dim) = evalBSpline2dimD1y(x, y, bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices)
+
 """
     evalBSplineD1(x, knots, vertices)
 Evaluating the derivative ofthe cubic BSpline at `x` for vertices 
