@@ -202,6 +202,36 @@ evalBSplineD1(x, bs::BSpline) = evalBSplineD1(x, bs.knots, bs.vertices)
 
 
 
+
+# Document
+function nVerticesNeededLeftRight(knots::Vector{T}, xin::T, xend::T) where {T<:Real}
+    knotsInmin = knots[2]
+    knotsInmax = knots[end-1]
+
+    lsubd = knots[2] - knots[1]
+
+    intervLeft = (knotsInmin - xin)/lsubd
+    intervRight = (xend - knotsInmax)/lsubd
+
+    intervLeft > 0 ? nKnotsLeft = Int64(ceil(intervLeft)) : nKnotsLeft = 0
+    intervRight > 0 ? nKnotsRight = Int64(ceil(intervRight)) : nKnotsRight = 0
+    return nKnotsLeft, nKnotsRight
+end
+
+
+# Document
+function extendedKnots(knots::Vector{T}, nKnotsLeft::Int, nKnotsRight::Int) where {T<:Real}
+
+    lsubd = knots[2] - knots[1]
+
+    addKnotsLeft = range(knots[1]-lsubd*nKnotsLeft, knots[1]-lsubd, length = nKnotsLeft)
+    addKnotsRight = range(knots[end]+lsubd, knots[end]+lsubd*nKnotsRight, length = nKnotsRight)
+
+    knotsNew = vcat(addKnotsLeft, knots, addKnotsRight)
+
+    return knotsNew
+end
+
 """
     expandBSpline(knots, vertices, xin, xend)
 Given the knots and the vertices of a given BSpline with a certain range of validity,
@@ -230,24 +260,13 @@ julia> bs2.vertices
 """
 function expandBSpline(knots::Vector{T}, vertices::Vector{T}, 
                        xin::T, xend::T) where {T<:Real}
-    knotsInmin = knots[2]
-    knotsInmax = knots[end-1]
-
+    
     nvertices = length(knots)
 
-    lsubd = knots[2] - knots[1]
-
-    intervLeft = (knotsInmin - xin)/lsubd
-    intervRight = (xend - knotsInmax)/lsubd
-
-    intervLeft > 0 ? nKnotsLeft = Int64(ceil(intervLeft)) : nKnotsLeft = 0
-    intervRight > 0 ? nKnotsRight = Int64(ceil(intervRight)) : nKnotsRight = 0
-
-    addKnotsLeft = range(knots[1]-lsubd*nKnotsLeft, knots[1]-lsubd, length = nKnotsLeft)
-    addKnotsRight = range(knots[end]+lsubd, knots[end]+lsubd*nKnotsRight, length = nKnotsRight)
-
-    knotsNew = vcat(addKnotsLeft, knots, addKnotsRight)
+    nKnotsLeft, nKnotsRight = nVerticesNeededLeftRight(knots, xin, xend)
+    knotsNew = extendedKnots(knots, nKnotsLeft, nKnotsRight)
     nverticesNew = length(knotsNew)
+
     A = zeros(nverticesNew, nverticesNew)
 
     D2 = D2matrix(nverticesNew)
@@ -256,7 +275,7 @@ function expandBSpline(knots::Vector{T}, vertices::Vector{T},
 
     A[nKnotsLeft+1 : (nKnotsLeft + nvertices), nKnotsLeft+1 : (nKnotsLeft + nvertices)] =Float64.(I(nvertices)) 
     
-    for i = nKnotsLeft:(nKnotsLeft + nvertices)
+    for i = nKnotsLeft+1:(nKnotsLeft + nvertices)
         W[i,i] = 1e4
     end
 
@@ -269,6 +288,56 @@ function expandBSpline(knots::Vector{T}, vertices::Vector{T},
 
     return BSpline(knotsNew, verticesNew)
 end
+
+# TO BE CHECKED AND DOCUMENTED
+function expandBSpline2dim(knotsx::Vector{T}, knotsy::Vector{T}, vertices::Vector{T}, 
+                           xin::T, xend::T, yin::T, yend::T)
+    nverticesx = length(knotsx)
+    nverticesy = length(knotsy)
+
+    nKnotsLeftx, nKnotsRightx = nVerticesNeededLeftRight(knotsx, xin, xend)
+    knotsNewx = extendedKnots(knotsx, nKnotsLeftx, nKnotsRightx)
+
+    nverticesxNew = length(knotsNewx)
+
+    nKnotsLefty, nKnotsRighty = nVerticesNeededLeftRight(knotsy, yin, yend)
+    knotsNewy = extendedKnots(knotsy, nKnotsLefty, nKnotsRighty)
+
+    nverticesyNew = length(knotsNewy)
+
+    indicesVector = reshape(1:nverticesxNew*nverticesyNew, nverticesxNew, nverticesyNew)
+
+    yindVerticesNew = zeros(nverticesxNew*nverticesyNew)
+    NNew = zeros(nverticesxNew*nverticesyNew, nverticesxNew*nverticesyNew)
+
+    # Identify a priori known vertices
+
+    verticesMatrix = reshape(vertices, nverticesx, nverticesy)
+
+    wi = 1e4
+
+    for i = (nKnotsLeftx+1):(nverticesx+nKnotsLeftx)
+        for j = (nKnotsLefty+1):(nvertivesy+nKnotsLefty)
+            yindVerticesNew[indicesVector[i,j]] = verticesMatrix[i,j]
+            NNew[indicesVector[i,j],indicesVector[i,j]] = wi
+        end
+    end
+
+    Px, Py = PD2matrices2dim(nverticesxNew, nverticesyNew)
+    λx = 1.
+    λy = 1.
+
+    Asys = NNew'*NNew + λx*Px + λy*Py
+    bsys = NNew'*yindVerticesNew
+
+    verticesNew =  Asys\bsys    
+
+    return BSpline2dim(knotsNewx, knotsNewy, verticesNew)
+end
+
+expandBSpline2dim(knotsx, knotsy, vertices, xin, xend, yin, yend) = expandBSpline2dim(Float64.(knotsx), Float64.(knotsy), Float64.(vertices), Float64(xin), Float64(xend), Float64(yin), Float64(yend))
+
+expandBSpline2dim(bs2dim::BSpline2dim, xin, xend, yin, yend) = expandBSpline2dim(bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices, xin, xend, yin, yend)
 
 ## Document
 expandBSpline(knots, vertices, xin, xend) = expandBSpline(Float64.(knots), Float64.(vertices), 
