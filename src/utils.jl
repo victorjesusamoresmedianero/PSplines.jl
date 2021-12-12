@@ -291,7 +291,7 @@ end
 
 # TO BE CHECKED AND DOCUMENTED
 function expandBSpline2dim(knotsx::Vector{T}, knotsy::Vector{T}, vertices::Vector{T}, 
-                           xin::T, xend::T, yin::T, yend::T)
+                           xin::T, xend::T, yin::T, yend::T) where {T <: Real}
     nverticesx = length(knotsx)
     nverticesy = length(knotsy)
 
