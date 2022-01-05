@@ -9,7 +9,7 @@ julia> equiSpacedPosition(2, [1,2,3,4,5,6,7,8])
 2
 ```
 """
-function equiSpacedPosition(x::T, knotsIn::Vector{T}) where {T<:Real}
+function equiSpacedPosition(x, knotsIn)
 
     @assert all(diff(knotsIn).>=0)    # bin limits are monotonically increaseing
 
@@ -35,7 +35,7 @@ function equiSpacedPosition(x::T, knotsIn::Vector{T}) where {T<:Real}
     end
     return s
 end
-equiSpacedPosition(x, knotsIn) = equiSpacedPosition(Float64(x), Float64.(knotsIn))
+# equiSpacedPosition(x, knotsIn) = equiSpacedPosition(Float64(x), Float64.(knotsIn))
 
 """
     evalBSplineBasis(x, knots)
@@ -59,7 +59,7 @@ julia> evalBSplineBasis(10.,buildKnots(1.,10., 12))
  0.16666666666666666
 ```  
 """
-function evalBSplineBasis(x::T, knots::Vector{T}) where {T<:Real}
+function evalBSplineBasis(x, knots) 
     transfMatrix = (1. / 6.) * [ -1. 3. -3. 1.;
                                   3. -6. 3. 0.;
                                  -3. 0. 3. 0.;
@@ -80,17 +80,17 @@ function evalBSplineBasis(x::T, knots::Vector{T}) where {T<:Real}
     return bsplineBasis
 end
 
-evalBSplineBasis(x, knots) = evalBSplineBasis(Float64(x), Float64.(knots))
+#evalBSplineBasis(x, knots) = evalBSplineBasis(Float64(x), Float64.(knots))
 
 ## Document
-function evalBSplineBasis2dim(x::T, y::T, knotsx::Vector{T}, knotsy::Vector{T}) where {T<:Real}
+function evalBSplineBasis2dim(x, y, knotsx, knotsy)
 
     bsplineBasisx = evalBSplineBasis(x, knotsx)
     bsplineBasisy = evalBSplineBasis(y, knotsy)
     return vec(bsplineBasisx*bsplineBasisy')
 end
 
-evalBSplineBasis2dim(x, y, knotsx, knotsy) = evalBSplineBasis2dim(Float64(x), Float64(y), Float64.(knotsx), Float64.(knotsy))
+#evalBSplineBasis2dim(x, y, knotsx, knotsy) = evalBSplineBasis2dim(Float64(x), Float64(y), Float64.(knotsx), Float64.(knotsy))
 
 """
     evalBSplineBasisD1(x, knots)
@@ -110,7 +110,7 @@ julia> evalBSplineBasisD1(10.,buildKnots(1.,10., 12))
   0.5
 ```  
 """
-function evalBSplineBasisD1(x::T, knots::Vector{T}) where {T<:Real}
+function evalBSplineBasisD1(x, knots)
 
     transfMatrix = (1. / 6.) * [ -1. 3. -3. 1.;
                                    3. -6. 3. 0.;
@@ -130,16 +130,16 @@ function evalBSplineBasisD1(x::T, knots::Vector{T}) where {T<:Real}
     bsplineBasisD1[s:s+3] = ξvlocalD1'*transfMatrix*(1/lsubd)
     return bsplineBasisD1
 end
-evalBSplineBasisD1(x, knots) = evalBSplineBasisD1(Float64(x), Float64.(knots))
+#evalBSplineBasisD1(x, knots) = evalBSplineBasisD1(Float64(x), Float64.(knots))
 
 
-function evalBSplineBasis2dimD1x(x::T, y::T, knotsx::Vector{T}, knotsy::Vector{T}) where {T<:Real}
+function evalBSplineBasis2dimD1x(x, y, knotsx, knotsy)
     dbsplineBasisx = evalBSplineBasisD1(x, knotsx)
     bsplineBasisy = evalBSplineBasis(y, knotsy)
     return vec(dbsplineBasisx*bsplineBasisy')
 end
 
-function evalBSplineBasis2dimD1y(x::T, y::T, knotsx::Vector{T}, knotsy::Vector{T}) where {T<:Real}
+function evalBSplineBasis2dimD1y(x, y, knotsx, knotsy)
     bsplineBasisx = evalBSplineBasis(x, knotsx)
     dbsplineBasisy = evalBSplineBasisD1(y, knotsy)
     return vec(bsplineBasisx*dbsplineBasisy')
@@ -204,7 +204,7 @@ evalBSplineD1(x, bs::BSpline) = evalBSplineD1(x, bs.knots, bs.vertices)
 
 
 # Document
-function nVerticesNeededLeftRight(knots::Vector{T}, xin::T, xend::T) where {T<:Real}
+function nVerticesNeededLeftRight(knots, xin, xend)
     knotsInmin = knots[2]
     knotsInmax = knots[end-1]
 
@@ -220,7 +220,7 @@ end
 
 
 # Document
-function extendedKnots(knots::Vector{T}, nKnotsLeft::Int, nKnotsRight::Int) where {T<:Real}
+function extendedKnots(knots, nKnotsLeft, nKnotsRight)
 
     lsubd = knots[2] - knots[1]
 
@@ -258,8 +258,8 @@ julia> bs2.vertices
   29.851651947327774
 ```  
 """
-function expandBSpline(knots::Vector{T}, vertices::Vector{T}, 
-                       xin::T, xend::T) where {T<:Real}
+function expandBSpline(knots, vertices, 
+                       xin, xend)
     
     nvertices = length(knots)
 
@@ -290,8 +290,8 @@ function expandBSpline(knots::Vector{T}, vertices::Vector{T},
 end
 
 # TO BE CHECKED AND DOCUMENTED
-function expandBSpline2dim(knotsx::Vector{T}, knotsy::Vector{T}, vertices::Vector{T}, 
-                           xin::T, xend::T, yin::T, yend::T) where {T <: Real}
+function expandBSpline2dim(knotsx, knotsy, vertices, 
+                           xin, xend, yin, yend)
     nverticesx = length(knotsx)
     nverticesy = length(knotsy)
 
@@ -335,21 +335,21 @@ function expandBSpline2dim(knotsx::Vector{T}, knotsy::Vector{T}, vertices::Vecto
     return BSpline2dim(knotsNewx, knotsNewy, verticesNew)
 end
 
-expandBSpline2dim(knotsx, knotsy, vertices, xin, xend, yin, yend) = expandBSpline2dim(Float64.(knotsx), Float64.(knotsy), Float64.(vertices), Float64(xin), Float64(xend), Float64(yin), Float64(yend))
+#expandBSpline2dim(knotsx, knotsy, vertices, xin, xend, yin, yend) = expandBSpline2dim(Float64.(knotsx), Float64.(knotsy), Float64.(vertices), Float64(xin), Float64(xend), Float64(yin), Float64(yend))
 
 expandBSpline2dim(bs2dim::BSpline2dim, xin, xend, yin, yend) = expandBSpline2dim(bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices, xin, xend, yin, yend)
 
 ## Document
-expandBSpline(knots, vertices, xin, xend) = expandBSpline(Float64.(knots), Float64.(vertices), 
-                                                          Float64(xin), Float64(xend))
+#expandBSpline(knots, vertices, xin, xend) = expandBSpline(Float64.(knots), Float64.(vertices), 
+                                                          #Float64(xin), Float64(xend))
 expandBSpline(bs::BSpline, xin, xend) = expandBSpline(bs.knots, bs.vertices, xin, xend)
 
 ## Document
-function buildSystemMatrix(N::Matrix{T};
-                            W = Wmatrix(size(N,1))::Matrix{T}, 
-                           Ω1 = Ω1matrix(size(N,2))::Matrix{T}, 
-                           Ω2 = Ω2matrix(size(N,2))::Matrix{T}, 
-                           Ω3 = Ω3matrix(size(N,2))::Matrix{T}) where {T<:Real}
+function buildSystemMatrix(N;
+                            W = Wmatrix(size(N,1)), 
+                           Ω1 = Ω1matrix(size(N,2)), 
+                           Ω2 = Ω2matrix(size(N,2)), 
+                           Ω3 = Ω3matrix(size(N,2)))
     nvertices = size(N,2)
     D1 = D1matrix(nvertices)
     D2 = D2matrix(nvertices)
@@ -360,8 +360,8 @@ function buildSystemMatrix(N::Matrix{T};
     return Asys
 end
 ## Document
-function buildSystemIndVect(N::Matrix{T}, y::Vector{T};
-                            W = Wmatrix(size(N,1))::Matrix{T}) where {T <: Real}
+function buildSystemIndVect(N, y;
+                            W = Wmatrix(size(N,1)))
     bsys = N'*W*y
     return bsys
 end
