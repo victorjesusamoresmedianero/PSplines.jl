@@ -68,7 +68,7 @@ function evalBSplineBasis(x, knots)
     lsubd = knots[2] - knots[1]
     knotsIn = knots[2:end-1] # the internal vertices are all except extrema
 
-    bsplineBasis = zeros(Float64, nvertices)
+    bsplineBasis = zeros(typeof(x), nvertices)
 
     s = equiSpacedPosition(x, knotsIn)
 
@@ -119,7 +119,7 @@ function evalBSplineBasisD1(x, knots)
     nvertices = length(knots)
     lsubd = knots[2] - knots[1]
     knotsIn = knots[2:end-1] # the internal vertices are all except extrema
-    bsplineBasisD1 = zeros(Float64, nvertices)
+    bsplineBasisD1 = zeros(typeof(x), nvertices)
 
     s = equiSpacedPosition(x, knotsIn)
 
