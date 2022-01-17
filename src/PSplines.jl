@@ -18,6 +18,6 @@ export evalBSplineBasis, evalBSpline
 export evalBSplineBasis2dim, evalBSpline2dim
 export evalBSplineBasisD1, evalBSplineD1
 export evalBSplineBasis2dimD1x, evalBSpline2dimD1x, evalBSplineBasis2dimD1y, evalBSpline2dimD1y 
-export expandBSpline
+export expandBSpline, expandBSpline2dim
 include("utils.jl")
 end
