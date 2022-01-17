@@ -314,7 +314,7 @@ function expandBSpline2dim(knotsx, knotsy, vertices,
 
     verticesMatrix = reshape(vertices, nverticesx, nverticesy)
 
-    w = 1e6
+    w = 1e10
 
     for i = (nKnotsLeftx+1):(nverticesx+nKnotsLeftx)
         for j = (nKnotsLefty+1):(nverticesy+nKnotsLefty)
