@@ -317,7 +317,7 @@ function expandBSpline2dim(knotsx, knotsy, vertices,
     wi = 1e4
 
     for i = (nKnotsLeftx+1):(nverticesx+nKnotsLeftx)
-        for j = (nKnotsLefty+1):(nvertivesy+nKnotsLefty)
+        for j = (nKnotsLefty+1):(nverticesy+nKnotsLefty)
             yindVerticesNew[indicesVector[i,j]] = verticesMatrix[i,j]
             NNew[indicesVector[i,j],indicesVector[i,j]] = wi
         end
