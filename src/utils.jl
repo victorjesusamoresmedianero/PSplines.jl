@@ -314,21 +314,24 @@ function expandBSpline2dim(knotsx, knotsy, vertices,
 
     verticesMatrix = reshape(vertices, nverticesx, nverticesy)
 
-    wi = 1e4
+    w = 1e6
 
     for i = (nKnotsLeftx+1):(nverticesx+nKnotsLeftx)
         for j = (nKnotsLefty+1):(nverticesy+nKnotsLefty)
             yindVerticesNew[indicesVector[i,j]] = verticesMatrix[i,j]
-            NNew[indicesVector[i,j],indicesVector[i,j]] = wi
+            NNew[indicesVector[i,j],indicesVector[i,j]] = 1
         end
     end
+
+    Wmat = zeros(size(NNew,1),size(NNew,2))
+    Wmat[diagind(Wmat)] .= w
 
     Px, Py = PD2matrices2dim(nverticesxNew, nverticesyNew)
     λx = 1.
     λy = 1.
 
-    Asys = NNew'*NNew + λx*Px + λy*Py
-    bsys = NNew'*yindVerticesNew
+    Asys = NNew'*Wmat*NNew + λx*Px + λy*Py
+    bsys = NNew'*Wmat*yindVerticesNew
 
     verticesNew =  Asys\bsys    
 
