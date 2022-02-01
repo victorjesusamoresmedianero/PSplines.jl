@@ -324,8 +324,7 @@ function expandBSpline2dim(knotsx, knotsy, vertices,
         end
     end
 
-    Wmat = zeros(size(NNew,1),size(NNew,2))
-    Wmat[diagind(Wmat)] .= w
+    Wmat = Diagonal(fill(w, size(NNew,1)))
 
     Px, Py = PD2matrices2dim(nverticesxNew, nverticesyNew)
     λx = 1.
