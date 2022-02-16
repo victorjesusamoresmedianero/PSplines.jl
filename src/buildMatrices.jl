@@ -48,7 +48,40 @@ function D2matrix(nvertices::Int)
     return D2matrix
 end
 
-## Document
+"""
+    PD2matrices2dim(nverticesRows, nverticesCols)
+Given as inputs the number of vertices associated to the rows and
+the number of vertices associated to the columns, the function 
+returns the penalization matrix for rows, PRows and the penalization
+matrix for columns, PCols. The penalization with this matrices would
+be: λrows*PRows + λcols*Pcols
+
+#Examples
+```julia julia-repl
+julia> PRows, PCols = PD2matrices2dim(10,10);
+julia> PRows
+100×100 Matrix{Float64}:
+  1.0  -2.0   1.0   0.0   0.0  0.0   0.0   0.0   0.0   0.0  …   0.0  -0.0   0.0   0.0   0.0  0.0   0.0   0.0   0.0   0.0
+ -2.0   5.0  -4.0   1.0   0.0  0.0   0.0   0.0   0.0   0.0     -0.0   0.0  -0.0   0.0   0.0  0.0   0.0   0.0   0.0   0.0
+  1.0  -4.0   6.0  -4.0   1.0  0.0   0.0   0.0   0.0   0.0      0.0  -0.0   0.0  -0.0   0.0  0.0   0.0   0.0   0.0   0.0
+  0.0   1.0  -4.0   6.0  -4.0  1.0   0.0   0.0   0.0   0.0      0.0   0.0  -0.0   0.0  -0.0  0.0   0.0   0.0   0.0   0.0
+  ⋮                            ⋮                            ⋱   ⋮                            ⋮                      
+  0.0   0.0   0.0   0.0   0.0  0.0  -0.0   0.0  -0.0   0.0      0.0   0.0   0.0   0.0   0.0  1.0  -4.0   6.0  -4.0   1.0
+  0.0   0.0   0.0   0.0   0.0  0.0   0.0  -0.0   0.0  -0.0      0.0   0.0   0.0   0.0   0.0  0.0   1.0  -4.0   5.0  -2.0
+  0.0   0.0   0.0   0.0   0.0  0.0   0.0   0.0  -0.0   0.0      0.0   0.0   0.0   0.0   0.0  0.0   0.0   1.0  -2.0   1.0
+
+julia> PCols
+100×100 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  -2.0  -0.0  …   0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0
+ 0.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  -0.0  -2.0      0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  -0.0  -0.0      0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0  0.0  -0.0  -0.0      0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0
+ ⋮                        ⋮                         ⋮          ⋱        ⋮                        ⋮                   
+ 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   0.0   0.0     -0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   0.0   0.0     -0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0  0.0
+ 0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   0.0   0.0     -2.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  1.0
+```
+"""
 function PD2matrices2dim(nverticesRows::Int, nverticesCols::Int)
 
     D2Rows = D2matrix(nverticesRows)
@@ -59,7 +92,7 @@ function PD2matrices2dim(nverticesRows::Int, nverticesCols::Int)
 
     PRows = kronecker(ICols, D2Rows)'* kronecker(ICols, D2Rows)
     PCols = kronecker(D2Cols,IRows)'* kronecker(D2Cols,IRows)
-    return PRows, PCols
+    return Matrix(PRows), Matrix(PCols)
 end
 
 """

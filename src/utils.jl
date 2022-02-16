@@ -20,11 +20,11 @@ function equiSpacedPosition(x, knotsIn)
     xinDist = abs(knotsIn[1]-x)
     xfinDist = abs(x - knotsIn[end])
 
-    if x <= prevfloat(Float64(knotsIn[1]))
+    if x <= knotsIn[1]
 
         xinDist/lsubd < proximityTol ? s = 1 : throw(DomainError(x, "The value is out of the domain (left)")) 
 
-    elseif x >= nextfloat(Float64(knotsIn[end]))
+    elseif x >= knotsIn[end]
 
         xfinDist/lsubd < proximityTol ? s = nbins : throw(DomainError(x, "The value is out of the domain (right)"))
 
@@ -35,7 +35,7 @@ function equiSpacedPosition(x, knotsIn)
     end
     return s
 end
-# equiSpacedPosition(x, knotsIn) = equiSpacedPosition(Float64(x), Float64.(knotsIn))
+
 
 """
     evalBSplineBasis(x, knots)
@@ -59,7 +59,7 @@ julia> evalBSplineBasis(10.,buildKnots(1.,10., 12))
  0.16666666666666666
 ```  
 """
-function evalBSplineBasis(x, knots) 
+function evalBSplineBasis(x, knots)
     transfMatrix = (1. / 6.) * [ -1. 3. -3. 1.;
                                   3. -6. 3. 0.;
                                  -3. 0. 3. 0.;
@@ -68,29 +68,45 @@ function evalBSplineBasis(x, knots)
     lsubd = knots[2] - knots[1]
     knotsIn = knots[2:end-1] # the internal vertices are all except extrema
 
-    bsplineBasis = zeros(typeof(x), nvertices)
+    bsplineBasis = zeros(promote_type(typeof(x), eltype(knots)), nvertices)
 
     s = equiSpacedPosition(x, knotsIn)
 
     ξ = (x - knotsIn[s])/lsubd
-    ξvlocal = [ξ^3, ξ^2, ξ, 1.0]
+    ξvlocal = [ξ^3, ξ^2, ξ, one(promote_type(typeof(x), eltype(knots)))]
     
     bsplineBasis[s:s+3] = ξvlocal'*transfMatrix
 
     return bsplineBasis
 end
 
-#evalBSplineBasis(x, knots) = evalBSplineBasis(Float64(x), Float64.(knots))
 
-## Document
+"""
+    evalBSplineBasis2dim(x, y, knotsx, knotsy)
+Builds the evaluation of the dyadic product of 2 cubic BSplines 
+basis, the first corresponding to `knotsx` at `x` and the second 
+corresponding to `knotsy`at `y`. The output is already vectorized
+instead of being a matrix.
+#Examples
+```julia julia-repl
+julia> evalBSplineBasis2dim(3.,2.,buildKnots(1.,10., 12),buildKnots(0.,5.,14))
+168-element Vector{Float64}:
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ ⋮
+ 0.0
+ 0.0
+ 0.0
+```  
+"""
 function evalBSplineBasis2dim(x, y, knotsx, knotsy)
 
     bsplineBasisx = evalBSplineBasis(x, knotsx)
     bsplineBasisy = evalBSplineBasis(y, knotsy)
     return vec(bsplineBasisx*bsplineBasisy')
 end
-
-#evalBSplineBasis2dim(x, y, knotsx, knotsy) = evalBSplineBasis2dim(Float64(x), Float64(y), Float64.(knotsx), Float64.(knotsy))
 
 """
     evalBSplineBasisD1(x, knots)
@@ -130,7 +146,6 @@ function evalBSplineBasisD1(x, knots)
     bsplineBasisD1[s:s+3] = ξvlocalD1'*transfMatrix*(1/lsubd)
     return bsplineBasisD1
 end
-#evalBSplineBasisD1(x, knots) = evalBSplineBasisD1(Float64(x), Float64.(knots))
 
 
 function evalBSplineBasis2dimD1x(x, y, knotsx, knotsy)
