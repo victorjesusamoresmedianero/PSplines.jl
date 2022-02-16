@@ -2,7 +2,7 @@ module PSplines
 
 import LinearAlgebra: diagind, I
 import Kronecker: kronecker
-import ForwardDiff: Dual
+import ForwardDiff
 
 # buildmatrices.jl
 export D1matrix, D2matrix, D3matrix, Ω1matrix, Ω2matrix, Ω3matrix, Wmatrix
