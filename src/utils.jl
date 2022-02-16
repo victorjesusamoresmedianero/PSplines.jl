@@ -353,13 +353,10 @@ function expandBSpline2dim(knotsx, knotsy, vertices,
     return BSpline2dim(knotsNewx, knotsNewy, verticesNew)
 end
 
-#expandBSpline2dim(knotsx, knotsy, vertices, xin, xend, yin, yend) = expandBSpline2dim(Float64.(knotsx), Float64.(knotsy), Float64.(vertices), Float64(xin), Float64(xend), Float64(yin), Float64(yend))
 
 expandBSpline2dim(bs2dim::BSpline2dim, xin, xend, yin, yend) = expandBSpline2dim(bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices, xin, xend, yin, yend)
 
 ## Document
-#expandBSpline(knots, vertices, xin, xend) = expandBSpline(Float64.(knots), Float64.(vertices), 
-                                                          #Float64(xin), Float64(xend))
 expandBSpline(bs::BSpline, xin, xend) = expandBSpline(bs.knots, bs.vertices, xin, xend)
 
 ## Document
