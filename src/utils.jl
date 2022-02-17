@@ -177,26 +177,25 @@ end
 
 evalBSpline(x, bs::BSpline) = evalBSpline(x, bs.knots, bs.vertices) 
 
-## Document
+"""
+    evalBSpline2dim(x, y, knotsx, knotsy, vertices)
+Evaluation of the cubic bidimensional BSpline with knots `knotsx`, `knotsy`
+at `(x,y)` for vertices `vertices`.
+
+#Examples
+```julia julia-repl
+julia> knotsx = knotsy = 0:0.1:10;
+julia> vertices = rand(length(knotsx)*length(knotsy ));
+julia> evalBSpline2dim(2., 3., knotsx, knotsy, vertices)
+0.3800038047730809
+```  
+"""
 function evalBSpline2dim(x, y, knotsx, knotsy, vertices)
     return evalBSplineBasis2dim(x, y, knotsx, knotsy)'*vertices
 end
 
 evalBSpline2dim(x, y, bs2dim::BSpline2dim) = evalBSpline2dim(x, y, bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices)
 
-
-function evalBSpline2dimD1x(x, y, knotsx, knotsy, vertices)
-    return evalBSplineBasis2dimD1x(x, y, knotsx, knotsy)'*vertices
-end
-
-evalBSpline2dimD1x(x, y, bs2dim::BSpline2dim) = evalBSpline2dimD1x(x, y, bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices)
-
-
-function evalBSpline2dimD1y(x, y, knotsx, knotsy, vertices)
-    return evalBSplineBasis2dimD1y(x, y, knotsx, knotsy)'*vertices
-end
-
-evalBSpline2dimD1y(x, y, bs2dim::BSpline2dim) = evalBSpline2dimD1y(x, y, bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices)
 
 """
     evalBSplineD1(x, knots, vertices)
@@ -215,10 +214,61 @@ end
 
 evalBSplineD1(x, bs::BSpline) = evalBSplineD1(x, bs.knots, bs.vertices)
 
+"""
+    evalBSpline2dimD1x(x, y, knotsx, knotsy, vertices)
+Evaluation of the derivative with respect to `x`of the 
+cubic bidimensional BSpline with knots `knotsx`, `knotsy`
+at `(x,y)` for vertices `vertices`.
+
+#Examples
+```julia julia-repl
+julia> knotsx = knotsy = 0:0.1:10;
+julia> vertices = rand(length(knotsx)*length(knotsy ));
+julia> evalBSpline2dimD1x(2., 3., knotsx, knotsy, vertices)
+-2.0863387254122316
+```  
+"""
+function evalBSpline2dimD1x(x, y, knotsx, knotsy, vertices)
+    return evalBSplineBasis2dimD1x(x, y, knotsx, knotsy)'*vertices
+end
+
+evalBSpline2dimD1x(x, y, bs2dim::BSpline2dim) = evalBSpline2dimD1x(x, y, bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices)
+
+"""
+    evalBSpline2dimD1y(x, y, knotsx, knotsy, vertices)
+Evaluation of the derivative with respect to `y`of the 
+cubic bidimensional BSpline with knots `knotsx`, `knotsy`
+at `(x,y)` for vertices `vertices`.
+
+#Examples
+```julia julia-repl
+julia> knotsx = knotsy = 0:0.1:10;
+julia> vertices = rand(length(knotsx)*length(knotsy ));
+julia> evalBSpline2dimD1y(2., 3., knotsx, knotsy, vertices)
+2.345106484778582
+```  
+"""
+function evalBSpline2dimD1y(x, y, knotsx, knotsy, vertices)
+    return evalBSplineBasis2dimD1y(x, y, knotsx, knotsy)'*vertices
+end
+
+evalBSpline2dimD1y(x, y, bs2dim::BSpline2dim) = evalBSpline2dimD1y(x, y, bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices)
 
 
 
-# Document
+"""
+    nVerticesNeededLeftRight(knots, xin, xend)
+Given the knots vector `knots` and the limits `xin` and `xend`,
+determines the number of vertices that knots needs  on the left 
+and on the right needed to reach the values `xin` and `xend`.
+
+#Examples
+```julia julia-repl
+julia> knots = 0.:1.:10.;
+julia> nVerticesNeededLeftRight(knots, -2, 14)
+(3, 5)
+```  
+"""
 function nVerticesNeededLeftRight(knots, xin, xend)
     knotsInmin = knots[2]
     knotsInmax = knots[end-1]
@@ -234,7 +284,23 @@ function nVerticesNeededLeftRight(knots, xin, xend)
 end
 
 
-# Document
+"""
+    extendedKnots(knots, nKnotsLeft, nKnotsRight)
+Given the knots vector `knots` and `nKnotsLeft` and `nKnotsRight`
+extends the `knots` on the left `nKnotsLeft` and on the right `nKnotsRight`.
+
+#Examples
+```julia julia-repl
+julia> knots = 0.:1.:10.;
+julia> extendedKnots(knots, 2, 2)
+15-element Vector{Float64}:
+ -2.0
+ -1.0
+  ⋮
+ 11.0
+ 12.0
+```  
+"""
 function extendedKnots(knots, nKnotsLeft, nKnotsRight)
 
     lsubd = knots[2] - knots[1]
@@ -304,7 +370,24 @@ function expandBSpline(knots, vertices,
     return BSpline(knotsNew, verticesNew)
 end
 
-# TO BE CHECKED AND DOCUMENTED
+expandBSpline(bs::BSpline, xin, xend) = expandBSpline(bs.knots, bs.vertices, xin, xend)
+
+"""
+    expandBSpline2dim(knotsx, knotsy, vertices, xin, xend, yin, yend)
+Given a 2D BSpline by `knotsx` , `knotsy` and `vetices`
+compute the expanded 2D BSpline to the limits `xin, `xend`, `yin`, `yend`.
+
+#Examples
+```julia julia-repl
+julia> knotsx = knotsy = 0:0.5:10;
+julia> vertices = rand(length(knotsx)*length(knotsy ));
+julia> expandBSpline2dim(knotsx, knotsy, vertices, -1., 11., -1., 11.)
+BSpline2dim{Float64}([-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0  …  7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5], 
+[-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0  …  7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5], 
+[-1.0029300060952653, -0.4790706367303448, 0.03153695697931029, 0.48370119176194715, 0.8342290770083228, 1.1030443114892081, 1.2623356760827873, 1.2585422976688359, 1.131589871095645, 0.9860138921208538  
+…  0.8984551404840291, 0.7049426036058777, 0.4552726974231055, 0.2849091663041328, 0.22446630431980158, 0.22686278460500844, 0.3058408589841374, 0.4651356516733504, 0.6732304620674567, 0.8966217568026448])
+```  
+"""
 function expandBSpline2dim(knotsx, knotsy, vertices, 
                            xin, xend, yin, yend)
     nverticesx = length(knotsx)
@@ -355,9 +438,6 @@ end
 
 
 expandBSpline2dim(bs2dim::BSpline2dim, xin, xend, yin, yend) = expandBSpline2dim(bs2dim.knotsx, bs2dim.knotsy, bs2dim.vertices, xin, xend, yin, yend)
-
-## Document
-expandBSpline(bs::BSpline, xin, xend) = expandBSpline(bs.knots, bs.vertices, xin, xend)
 
 ## Document
 function buildSystemMatrix(N;

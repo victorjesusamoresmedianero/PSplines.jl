@@ -1,6 +1,6 @@
 module PSplines
 
-import LinearAlgebra: diagind, I
+import LinearAlgebra: diagind, I, Diagonal
 import Kronecker: kronecker
 import ForwardDiff
 
@@ -20,6 +20,7 @@ export evalBSplineBasis2dim, evalBSpline2dim
 export evalBSplineBasisD1, evalBSplineD1
 export evalBSplineBasis2dimD1x, evalBSpline2dimD1x, evalBSplineBasis2dimD1y, evalBSpline2dimD1y 
 export expandBSpline, expandBSpline2dim
+export nVerticesNeededLeftRight, extendedKnots
 include("utils.jl")
 
 #promotion.jl
